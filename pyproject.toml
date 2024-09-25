@@ -28,6 +28,8 @@ langchain-chroma = "^0.1.4"
 langchain-experimental = "^0.3.0"
 langchain-openai = "^0.2.0"
 langchain-ollama = "^0.2.0"
+pyjwt = {extras = ["crypto"], version = "^2.9.0"}
+requests = "^2.32.3"
 
 
 [tool.poetry.group.dev.dependencies]

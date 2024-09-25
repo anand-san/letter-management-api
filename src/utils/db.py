@@ -1,10 +1,12 @@
 from langchain_chroma import Chroma
 from rag.indexer import load_embedding_model, EmbeddingModelSource
 from langchain.schema.document import Document
+from utils.get_env import get_env_var
 import os
 import shutil
 
-CHROMA_PATH = os.getenv("CHROMA_PATH") or ".cache/chroma"
+
+CHROMA_PATH = get_env_var("CHROMA_PATH")
 
 
 def get_chroma_instance():

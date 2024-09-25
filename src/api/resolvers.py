@@ -6,15 +6,9 @@ from utils.db import delete_chroma_store, update_chroma_store
 import strawberry
 from strawberry.types import Info
 from rag.retriever import retrieve_documents
+from utils.get_env import get_env_var
 
-DOCUMENTS_DIR = os.getenv("DOCUMENTS_DIR") or "documents"
-
-
-@strawberry.type
-class Query:
-    @strawberry.field
-    def hello(self, name: str = "World") -> str:
-        return f"Hello!!!, {name}!"
+DOCUMENTS_DIR = get_env_var("DOCUMENTS_DIR")
 
 
 @strawberry.type
@@ -37,8 +31,8 @@ RAGResponse = Union[RAGResult, RAGError]
 
 
 @strawberry.type
-class Mutation:
-    @strawberry.mutation
+class Query:
+    @strawberry.field
     async def get_response(self, query: str, info: Info) -> RAGResponse:
         try:
             if not info.context["is_authenticated"]:
@@ -49,6 +43,19 @@ class Mutation:
         except Exception as e:
             return RAGError(message=str(e))
 
+    @strawberry.field
+    async def get_me(self, info: Info) -> RAGResponse:
+        try:
+            if not info.context["is_authenticated"]:
+                return RAGError(message="User is not authenticated")
+            user = info.context["user"]
+            return RAGResult(result=f"{user}")
+        except Exception as e:
+            return RAGError(message=str(e))
+
+
+@strawberry.type
+class Mutation:
     @strawberry.mutation
     async def update_store(self, chunk_strategy: ChunkStrategy, info: Info) -> RAGResponse:
         try:
