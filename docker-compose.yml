@@ -1,0 +1,24 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # environment:
+    # - DATABASE_URL=postgresql://username:password@db/myapp
+    ports:
+      - "8002:8002"
+    # depends_on:
+    #   - db
+    restart: always
+
+  # db:
+  #   image: postgres:16
+  #   environment:
+  #     - POSTGRES_DB=myapp
+  #     - POSTGRES_USER=username
+  #     - POSTGRES_PASSWORD=password
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+  #   restart: always
+# volumes:
+#   postgres-data:
