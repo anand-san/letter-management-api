@@ -1,3 +1,4 @@
+from db.postgres.migrate import migrate_pg
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from strawberry.fastapi import GraphQLRouter
@@ -22,9 +23,11 @@ graphql_app = GraphQLRouter(schema, context_getter=get_context)
 app.include_router(graphql_app, prefix="/graphql")
 
 
-# @app.on_event("startup")
-# async def startup():
-#     pass
+@app.on_event("startup")
+async def startup():
+    print("Migrating Postgres Schema")
+    await migrate_pg()
+    print("Postgres Schema Migration Complete")
 
 
 def start():

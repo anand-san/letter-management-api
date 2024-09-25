@@ -30,6 +30,8 @@ langchain-openai = "^0.2.0"
 langchain-ollama = "^0.2.0"
 pyjwt = {extras = ["crypto"], version = "^2.9.0"}
 requests = "^2.32.3"
+pymilvus = "^2.4.7"
+asyncpg = "^0.29.0"
 
 
 [tool.poetry.group.dev.dependencies]
