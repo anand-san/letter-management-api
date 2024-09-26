@@ -2,7 +2,7 @@ import jwt
 import requests
 from jwt.algorithms import RSAAlgorithm
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
-from utils.get_env import get_env_var
+from src.utils.get_env import get_env_var
 
 JWKS_KEY_CACHE = {}
 

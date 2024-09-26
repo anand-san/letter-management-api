@@ -1,6 +1,6 @@
 import json
-from auth.clerk_auth import ClerkAuth
-from db.postgres.postgres import get_pg_connection
+from src.auth.clerk_auth import ClerkAuth
+from src.db.postgres.postgres import get_pg_connection
 from fastapi import Request
 
 

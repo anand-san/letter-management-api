@@ -2,7 +2,7 @@ import os
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_experimental.text_splitter import SemanticChunker
-from rag.indexer import load_embedding_model, EmbeddingModelSource
+from src.rag.indexer import load_embedding_model, EmbeddingModelSource
 from langchain.schema.document import Document
 
 

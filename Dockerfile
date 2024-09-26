@@ -2,6 +2,7 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+EXPOSE 8000
 ENV PYTHONPATH=/app
 
 COPY pyproject.toml /app
@@ -13,4 +14,4 @@ RUN poetry install --no-dev --no-interaction --no-ansi
 
 COPY . /app
 
-CMD ["uvicorn", "src.api.main:start", "--host", "0.0.0.0", "--port", "8002"]
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]

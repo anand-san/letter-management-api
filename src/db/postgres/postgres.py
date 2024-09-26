@@ -1,6 +1,6 @@
 import asyncpg
 
-from utils.get_env import get_env_var
+from src.utils.get_env import get_env_var
 
 
 async def get_pg_connection():

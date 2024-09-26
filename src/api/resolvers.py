@@ -3,10 +3,11 @@ import os
 from typing import Union
 from rag.document_loader import recursive_chunk_documents, load_docs_from_directory, semantic_chunk_documents
 from utils.db import delete_chroma_store, update_chroma_store
+from src.utils.db import delete_chroma_store, update_chroma_store
 import strawberry
 from strawberry.types import Info
-from rag.retriever import retrieve_documents
-from utils.get_env import get_env_var
+from src.rag.retriever import retrieve_documents
+from src.utils.get_env import get_env_var
 
 DOCUMENTS_DIR = get_env_var("DOCUMENTS_DIR")
 

@@ -1,7 +1,7 @@
 from langchain_chroma import Chroma
-from rag.indexer import load_embedding_model, EmbeddingModelSource
+from src.rag.indexer import load_embedding_model, EmbeddingModelSource
 from langchain.schema.document import Document
-from utils.get_env import get_env_var
+from src.utils.get_env import get_env_var
 import os
 import shutil
 

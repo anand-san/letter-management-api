@@ -1,10 +1,10 @@
-from rag.document_loader import load_file_template
-from rag.indexer import ChatModelSource, LLM_CHAT_MODEL, OllamaChatModel, OpenAIChatModel
-from utils.db import get_chroma_instance
+from src.rag.document_loader import load_file_template
+from src.rag.indexer import ChatModelSource, LLM_CHAT_MODEL, OllamaChatModel, OpenAIChatModel
+from src.utils.db import get_chroma_instance
 from langchain.prompts import PromptTemplate
 from langchain_community.llms.ollama import Ollama
 from langchain_openai import ChatOpenAI
-from utils.get_env import get_env_var
+from src.utils.get_env import get_env_var
 
 index = None
 

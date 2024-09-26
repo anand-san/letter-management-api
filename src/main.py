@@ -1,9 +1,9 @@
-from db.postgres.migrate import migrate_pg
+from src.db.postgres.migrate import migrate_pg
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from strawberry.fastapi import GraphQLRouter
-from api.schema import schema
-from auth.middleware import get_context
+from src.api.schema import schema
+from src.auth.middleware import get_context
 from dotenv import load_dotenv
 
 # setup_logging()
@@ -30,10 +30,10 @@ async def startup():
     print("Postgres Schema Migration Complete")
 
 
-def start():
-    import uvicorn
-    uvicorn.run("api.main:app", host="0.0.0.0", port=8002, reload=True)
+# def start():
+#     import uvicorn
+#     uvicorn.run("main:app", host="0.0.0.0", port=8002, reload=True)
 
 
-if __name__ == "__main__":
-    start()
+# if __name__ == "__main__":
+#     start()

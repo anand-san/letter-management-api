@@ -1,5 +1,5 @@
-from db.postgres.postgres import get_pg_connection
-from db.postgres.schema import DOCUMENTS_INDEXES, DOCUMENTS_TABLE, ENABLE_UUID_EXTENSION, USER_TABLE
+from src.db.postgres.postgres import get_pg_connection
+from src.db.postgres.schema import DOCUMENTS_INDEXES, DOCUMENTS_TABLE, ENABLE_UUID_EXTENSION, USER_TABLE
 
 
 async def migrate_pg():
