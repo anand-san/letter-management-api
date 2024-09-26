@@ -1,5 +1,5 @@
 import sentry_sdk
-from utils.get_env import get_env_var
+from src.utils.get_env import get_env_var
 
 
 def init_sentry():
