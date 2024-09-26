@@ -42,7 +42,7 @@ LLM_EMBED_MODEL = Union[OllamaEmbedModel, OpenAIEmbedModel]
 LLM_CHAT_MODEL = Union[OllamaChatModel, OpenAIChatModel]
 
 
-def load_embedding_model(type: EmbeddingModelSource = EmbeddingModelSource.HUGGING_FACE):
+def load_embedding_model(type: EmbeddingModelSource = EmbeddingModelSource.OPEN_AI):
     if (type == EmbeddingModelSource.OPEN_AI):
 
         model_name = OpenAIEmbedModel.TEXT_EMBED_3_SMALL

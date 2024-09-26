@@ -8,7 +8,7 @@ import shutil
 
 def get_chroma_instance():
     CHROMA_PATH = get_env_var("CHROMA_PATH")
-    embeddings = load_embedding_model(EmbeddingModelSource.OLLAMA)
+    embeddings = load_embedding_model(EmbeddingModelSource.OPEN_AI)
     return Chroma(
         persist_directory=CHROMA_PATH, embedding_function=embeddings
     )
