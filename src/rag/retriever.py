@@ -4,11 +4,8 @@ from src.utils.db import get_chroma_instance
 from langchain.prompts import PromptTemplate
 from langchain_community.llms.ollama import Ollama
 from langchain_openai import ChatOpenAI
-from src.utils.get_env import get_env_var
 
 index = None
-
-OLLAMA_LLM_MODEL = get_env_var("OLLAMA_LLM_MODEL")
 
 
 async def initialize_index():

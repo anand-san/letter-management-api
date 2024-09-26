@@ -1,24 +1,18 @@
-import sys
-from loguru import logger
+import sentry_sdk
+from utils.get_env import get_env_var
 
 
-def setup_logging():
-    logger.remove()  # Remove default handler
-    logger.add(
-        sys.stderr,
-        format="{time} {level} {message}",
-        filter="my_rag_project",
-        level="INFO",
-    )
-    logger.add(
-        "logs/file_{time}.log",
-        rotation="500 MB",
-        retention="10 days",
-        format="{time} {level} {message}",
-        filter="my_rag_project",
-        level="DEBUG",
-    )
+def init_sentry():
 
+    try:
+        SENTRY_DSN = get_env_var("SENTRY_DSN")
+        ENVIRONMENT = get_env_var("ENVIRONMENT")
 
-# Call this function at the start of your application
-setup_logging()
+        if (ENVIRONMENT == "production"):
+            sentry_sdk.init(
+                dsn=''.join(SENTRY_DSN),
+                traces_sample_rate=1.0,
+            )
+
+    except Exception as e:
+        print(f"Error initializing Sentry: {e}")

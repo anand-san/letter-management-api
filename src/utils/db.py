@@ -6,10 +6,8 @@ import os
 import shutil
 
 
-CHROMA_PATH = get_env_var("CHROMA_PATH")
-
-
 def get_chroma_instance():
+    CHROMA_PATH = get_env_var("CHROMA_PATH")
     embeddings = load_embedding_model(EmbeddingModelSource.OLLAMA)
     return Chroma(
         persist_directory=CHROMA_PATH, embedding_function=embeddings
@@ -71,5 +69,7 @@ def calculate_chunk_ids(chunks):
 
 
 def delete_chroma_store():
+    CHROMA_PATH = get_env_var("CHROMA_PATH")
+
     if os.path.exists(CHROMA_PATH):
         shutil.rmtree(CHROMA_PATH)

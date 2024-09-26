@@ -11,6 +11,6 @@ async def migrate_pg():
         await conn.execute(DOCUMENTS_INDEXES)
 
     except Exception as e:
-        print(f"Migration Failed {e}")
+        print(f"Error migrating postgres db {e}")
     finally:
         await conn.close()
