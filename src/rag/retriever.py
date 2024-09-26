@@ -1,25 +1,16 @@
-from src.rag.document_loader import load_file_template
-from src.rag.indexer import ChatModelSource, LLM_CHAT_MODEL, OllamaChatModel, OpenAIChatModel
-from src.utils.db import get_chroma_instance
 from langchain.prompts import PromptTemplate
 from langchain_community.llms.ollama import Ollama
 from langchain_openai import ChatOpenAI
 
-index = None
+from src.db.milvus.utils import embed_query
+from src.rag.document_loader import load_file_template
+from src.rag.indexer import ChatModelSource, LLM_CHAT_MODEL, OllamaChatModel, OpenAIChatModel
+from src.db.milvus.operations import search_user_documents_vector
 
 
-async def initialize_index():
-    global index
-    if index is None:
-        return get_chroma_instance()
-
-
-def find_context_text(query: str, index, k: int):
-    """Finds context matching the query from the vector sotre"""
-    if index is None:
-        return "Failed to initialize"
-    docs = index.similarity_search_with_score(query, k=k)
-    return "\n\n---\n\n".join([doc.page_content for doc, _score in docs])
+def find_context_text(query: str, user_id: str):
+    query_vector = embed_query(query)
+    return search_user_documents_vector(query_vector=query_vector, user_id=user_id, top_k=2)
 
 
 def prepare_llm_prompt(context_text: str, query: str):
@@ -51,11 +42,9 @@ def query_llm(chat_model: ChatModelSource, model_name: LLM_CHAT_MODEL, prompt):
         raise ValueError(f"Unknown chat model source: {chat_model}")
 
 
-async def retrieve_documents(query: str, k: int = 8):
-    index = await initialize_index()
-    context_text = find_context_text(query, index, k)
+async def retrieve_documents(query: str, user_id: str):
+    context_text = find_context_text(query, user_id)
     llm_prompt = prepare_llm_prompt(context_text, query)
-    print(llm_prompt)
     llm_summary = query_llm(ChatModelSource.OPEN_AI,
                             OpenAIChatModel.GPT_4O_MINI, llm_prompt)
     return llm_summary or "I could not find any relevant information"

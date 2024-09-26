@@ -1,8 +1,9 @@
-from enum import Enum
-from src.rag.document_loader import recursive_chunk_documents, load_docs_from_directory, semantic_chunk_documents
-from src.utils.db import delete_chroma_store, update_chroma_store
 import strawberry
 from strawberry.types import Info
+from enum import Enum
+
+from src.db.milvus.operations import update_vector_store, delete_vector_store
+from src.rag.document_loader import recursive_chunk_documents, load_docs_from_directory, semantic_chunk_documents
 from src.rag.retriever import retrieve_documents
 from src.utils.get_env import get_env_var
 
@@ -26,7 +27,9 @@ class Query:
             if not info.context["is_authenticated"]:
                 raise Exception("User is not authenticated")
 
-            result = await retrieve_documents(query)
+            user_id = info.context['user']['id']
+
+            result = await retrieve_documents(query, user_id)
             return RAGResult(result=result)
         except Exception as e:
             raise Exception(str(e))
@@ -50,6 +53,8 @@ class Mutation:
             if not info.context["is_authenticated"]:
                 raise Exception("User is not authenticated")
 
+            user_id = info.context['user']['id']
+
             DOCUMENTS_DIR = get_env_var("DOCUMENTS_DIR")
             documents = load_docs_from_directory(DOCUMENTS_DIR)
             chunked_documents = []
@@ -64,7 +69,7 @@ class Mutation:
             else:
                 raise ValueError("Unknown chunk strategy")
 
-            update_chroma_store(chunked_documents)
+            update_vector_store(chunked_documents, user_id)
             return RAGResult(result="Store updated")
         except ValueError as e:
             raise Exception(str(e))
@@ -76,8 +81,9 @@ class Mutation:
         try:
             if not info.context["is_authenticated"]:
                 raise Exception("User is not authenticated")
+            user_id = info.context['user']['id']
 
-            delete_chroma_store()
+            delete_vector_store(user_id=user_id)
             return RAGResult(result="Store deleted")
         except Exception as e:
             raise Exception(str(e))

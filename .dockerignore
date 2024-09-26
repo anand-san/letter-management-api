@@ -1,9 +1,40 @@
-__pycache__
+# Python cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Local development environment
+.venv/
+env/
+venv/
+.idea/
+.vscode/
+*.swp
+
+# Logs
+logs/
+*.log
+
+# Environment variables file
+.env
+.env.*
+
+# Development and testing tools
+*.coverage
+.coverage.*
+.tox/
+.nox/
+pytest_cache/
+.coverage
 .cache
+.pytest_cache/
+*.cover
+*.py,cover
+*.pyc
+*.pyo
+
 .temp_docs
-.venv
-logs
-.env.template
 .flake8
 .gitignore
 .git
@@ -11,3 +42,4 @@ README.md
 Dockerfile
 docker-compose.yml
 .pre-commit-config.yaml
+

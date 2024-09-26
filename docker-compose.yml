@@ -5,9 +5,7 @@ x-environment-variables: &common-env-vars
 
 services:
   app:
-    build:
-      context: https://github.com/anand-san/letter-management-api.git
-      dockerfile: Dockerfile
+    image: anandsandilya/letters-management-api:0.1
     env_file:
       - .env.app.prod
     ports:
