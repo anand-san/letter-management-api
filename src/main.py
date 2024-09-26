@@ -1,4 +1,4 @@
-from utils.logging import init_sentry
+from src.utils.logging import init_sentry
 from src.db.postgres.migrate import migrate_pg
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
