@@ -23,9 +23,10 @@ async def get_context(request: Request):
 
 
 async def check_if_user_exists_in_db(user):
+    conn = await get_pg_connection()
+
     try:
         # Check if user exists in the database
-        conn = await get_pg_connection()
         existing_user = await conn.fetchrow('''
                 SELECT * FROM users WHERE clerk_user_id = $1
             ''', user["id"])
