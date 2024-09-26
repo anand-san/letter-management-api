@@ -24,11 +24,11 @@ DOCUMENTS_TABLE = """
     """
 
 DOCUMENTS_INDEXES = """CREATE INDEX IF NOT EXISTS idx_user_document 
-ON documents (user_id, uploaded_at DESC);CREATE INDEX IF NOT EXISTS idx_document_type 
+ON documents (db_user_id, uploaded_at DESC);CREATE INDEX IF NOT EXISTS idx_document_type 
 ON documents (document_type);CREATE INDEX IF NOT EXISTS gin_metadata_idx 
 ON documents USING GIN (metadata);"""
 
 # --- Create Index Separately ---
-# CREATE INDEX idx_user_document ON documents(user_id, uploaded_at DESC);
+# CREATE INDEX idx_user_document ON documents(db_user_id, uploaded_at DESC);
 # CREATE INDEX idx_document_type ON documents(document_type);
 # CREATE INDEX gin_metadata_idx ON documents USING GIN (metadata);
