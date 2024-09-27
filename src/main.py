@@ -1,12 +1,14 @@
-from src.utils.logging import init_sentry
-from src.db.postgres.migrate import migrate_pg
+from dotenv import load_dotenv
 from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from strawberry.fastapi import GraphQLRouter
+
 from src.api.schema import schema
-from src.auth.middleware import get_context
-from dotenv import load_dotenv
-from fastapi.responses import JSONResponse
+from src.middlewares.auth import AuthMiddleware
+from src.context.get_context import get_context
+from src.utils.logging import init_sentry
+from src.db.postgres.migrate import migrate_pg
 
 load_dotenv()
 init_sentry()
@@ -22,6 +24,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(AuthMiddleware)
 # Generic exception handler
 
 

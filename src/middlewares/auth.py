@@ -1,10 +1,77 @@
+import json
 import jwt
 import requests
+
+from fastapi import Request, HTTPException
+from starlette.middleware.base import BaseHTTPMiddleware
 from jwt.algorithms import RSAAlgorithm
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
+
 from src.utils.get_env import get_env_var
+from src.db.postgres.postgres import get_pg_connection
 
 JWKS_KEY_CACHE = {}
+
+
+class AuthMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app):
+        super().__init__(app)
+        self.clerk = ClerkAuth()
+
+    async def dispatch(self, request: Request, call_next):
+        auth_header = request.headers.get('Authorization')
+
+        if not auth_header:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+
+        user_id = await self.verify_token(auth_header)
+
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+
+        user = self.clerk.get_user(user_id)
+
+        if not user:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+
+        self.add_user_to_db(user) if not await self.user_exists_in_db(user) else None
+
+        request.state.user = user
+
+        response = await call_next(request)
+        return response
+
+    async def verify_token(self, auth_header: str) -> str:
+        key = self.clerk.get_jwks()
+        return self.clerk.validate_bearer_token(auth_header, key)
+
+    async def user_exists_in_db(self, user):
+        conn = await get_pg_connection()
+
+        try:
+            # Check if user exists in the database
+            existing_user = await conn.fetchrow('''
+                    SELECT * FROM users WHERE clerk_user_id = $1
+                ''', user["id"])
+            return True if existing_user else False
+        except Exception as e:
+            print(f"An error occurred: {e}")
+        finally:
+            await conn.close()
+
+    async def add_user_to_db(self, user):
+        conn = await get_pg_connection()
+
+        try:
+            await conn.execute('''
+                    INSERT INTO users (clerk_user_id, clerk_metadata, created_at, updated_at)
+                    VALUES ($1, $2, NOW(), NOW())
+                ''', user["id"], json.dumps(user))
+            pass
+        except Exception as e:
+            print(f"An error occurred: {e}")
+        finally:
+            await conn.close()
 
 
 class ClerkAuth:
