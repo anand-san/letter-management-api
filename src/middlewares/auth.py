@@ -34,7 +34,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         if not user:
             raise HTTPException(status_code=401, detail="Unauthorized")
 
-        self.add_user_to_db(user) if not await self.user_exists_in_db(user) else None
+        await self.add_user_to_db(user) if not await self.user_exists_in_db(user) else None
 
         request.state.user = user
 
