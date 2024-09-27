@@ -20,5 +20,6 @@ __pycache__/
 build/
 dist/
 *.egg-info/
+.milvus/
 
 todos.md

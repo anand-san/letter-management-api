@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from strawberry.fastapi import GraphQLRouter
@@ -30,12 +30,17 @@ app.add_middleware(AuthMiddleware)
 
 @app.exception_handler(Exception)
 async def generic_exception_handler(request: Request, exc: Exception):
+    error_message = "An internal server error occurred."
+    status_code = 500
+    if (isinstance(exc, HTTPException)):
+        error_message = exc.detail
+        status_code = exc.status_code
     return JSONResponse(
-        status_code=500,
-        content={"message": "An internal server error occurred."},
+        status_code=status_code,
+        content={"data": error_message},
     )
 
-graphql_app = GraphQLRouter(schema, context_getter=get_context)
+graphql_app = GraphQLRouter(schema, context_getter=get_context, graphiql=False)
 app.include_router(graphql_app, prefix="/graphql")
 
 

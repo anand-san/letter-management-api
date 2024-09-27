@@ -10,14 +10,14 @@ services:
     env_file:
       - .env.app.prod
     ports:
-      - "8008:8000"
+      - "8004:8000"
     environment:
       <<: *common-env-vars
       POSTGRES_HOST: postgres
-      MILVUS_HOST: milvus
+      # MILVUS_HOST: milvus
     depends_on:
       - postgres
-      - milvus
+      # - milvus
     networks:
       - letter-management-app-network
     restart: always
@@ -33,32 +33,33 @@ services:
       - letter-management-app-network
     restart: always
 
-  milvus:
-    image: milvusdb/milvus:v2.4.5
-    container_name: letter-management-milvus
-    security_opt:
-      - seccomp:unconfined
-    environment:
-      ETCD_USE_EMBED: "true"
-      ETCD_DATA_DIR: /var/lib/milvus/etcd
-      ETCD_CONFIG_PATH: /milvus/configs/embedEtcd.yaml
-      COMMON_STORAGETYPE: local
-    volumes:
-      - milvus-data:/var/lib/milvus
-      # Create these files manually see https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh
-      - ./.milvus/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
-      - ./.milvus/user.yaml:/milvus/configs/user.yaml
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
-      interval: 60s
-      start_period: 90s
-      timeout: 30s
-      retries: 3
-    command: milvus run standalone
+  # add later
+  # milvus:
+  #   image: milvusdb/milvus:v2.4.5
+  #   container_name: letter-management-milvus
+  #   security_opt:
+  #     - seccomp:unconfined
+  #   environment:
+  #     ETCD_USE_EMBED: "true"
+  #     ETCD_DATA_DIR: /var/lib/milvus/etcd
+  #     ETCD_CONFIG_PATH: /milvus/configs/embedEtcd.yaml
+  #     COMMON_STORAGETYPE: local
+  #   volumes:
+  #     - milvus-data:/var/lib/milvus
+  #     # Create these files manually see https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh
+  #     - ./.milvus/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
+  #     - ./.milvus/user.yaml:/milvus/configs/user.yaml
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+  #     interval: 60s
+  #     start_period: 90s
+  #     timeout: 30s
+  #     retries: 3
+  #   command: milvus run standalone
 
 volumes:
   postgres-data:
-  milvus-data:
+  # milvus-data:
 
 networks:
   letter-management-app-network:

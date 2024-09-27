@@ -22,17 +22,20 @@ class AuthMiddleware(BaseHTTPMiddleware):
         auth_header = request.headers.get('Authorization')
 
         if not auth_header:
-            raise HTTPException(status_code=401, detail="Unauthorized")
+            raise HTTPException(
+                status_code=401, detail="You are not allowed to access this resource")
 
         user_id = await self.verify_token(auth_header)
 
         if not user_id:
-            raise HTTPException(status_code=401, detail="Unauthorized")
+            raise HTTPException(
+                status_code=401, detail="You are not allowed to access this resource")
 
         user = self.clerk.get_user(user_id)
 
         if not user:
-            raise HTTPException(status_code=401, detail="Unauthorized")
+            raise HTTPException(
+                status_code=401, detail="You are not allowed to access this resource")
 
         await self.add_user_to_db(user) if not await self.user_exists_in_db(user) else None
 
