@@ -14,11 +14,7 @@ fastapi = "^0.115.0"
 uvicorn = "^0.30.6"
 langchain = "^0.3.0"
 langchain-community = "^0.3.0"
-transformers = "^4.44.2"
-sentence-transformers = "^3.1.1"
-faiss-cpu = "^1.8.0.post1"
 strawberry-graphql = {extras = ["fastapi"], version = "^0.138.1"}
-loguru = "^0.7.2"
 python-dotenv = "^1.0.1"
 pypdf = "^5.0.0"
 pytest = "^8.3.3"
@@ -28,12 +24,11 @@ langchain-chroma = "^0.1.4"
 langchain-experimental = "^0.3.0"
 langchain-openai = "^0.2.0"
 langchain-ollama = "^0.2.0"
-pyjwt = {extras = ["crypto"], version = "^2.9.0"}
-requests = "^2.32.3"
 pymilvus = "^2.4.7"
 asyncpg = "^0.29.0"
 sentry-sdk = "^2.14.0"
 google-cloud-documentai = "^2.32.0"
+firebase-admin = "^6.5.0"
 
 
 [tool.poetry.group.dev.dependencies]
