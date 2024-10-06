@@ -14,10 +14,24 @@ def recursive_chunk_documents(documents):
     return chunker.split_documents(documents)
 
 
+def recursive_chunk_text(text_content: list[str], metadata: list[dict] = []):
+    chunker = RecursiveCharacterTextSplitter(chunk_size=256,
+                                             chunk_overlap=64,
+                                             length_function=len,
+                                             is_separator_regex=False)
+    return chunker.create_documents(text_content, metadatas=metadata)
+
+
 def semantic_chunk_documents(documents: list[Document]):
     embed = load_embedding_model(EmbeddingModelSource.OPEN_AI)
     chunker = SemanticChunker(embed)
     return chunker.split_documents(documents)
+
+
+def semantic_chunk_text(text_content: str, metadata: list[dict] = []):
+    embed = load_embedding_model(EmbeddingModelSource.OPEN_AI)
+    chunker = SemanticChunker(embed)
+    return chunker.create_documents([text_content], metadatas=metadata)
 
 
 def load_docs_from_directory(directory: str = "documents"):
