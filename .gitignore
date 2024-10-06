@@ -23,3 +23,5 @@ dist/
 .milvus/
 
 todos.md
+
+firebase-service-account.json
