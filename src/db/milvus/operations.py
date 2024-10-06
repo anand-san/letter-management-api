@@ -1,6 +1,5 @@
-from pymilvus import Collection, utility
+from pymilvus import Collection
 from langchain.schema.document import Document
-from strawberry.types import Info
 
 from src.db.milvus.schema import get_milvus_documents_collection
 from src.db.milvus.utils import open_milvus_connection, embed_documents, close_milvus_connection, create_document_chunk_ids
