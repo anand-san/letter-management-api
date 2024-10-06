@@ -6,6 +6,7 @@ from src.db.milvus.utils import embed_query
 from src.rag.document_loader import load_file_template
 from src.rag.indexer import ChatModelSource, LLM_CHAT_MODEL, OllamaChatModel, OpenAIChatModel
 from src.db.milvus.operations import search_user_documents_vector
+from src.db.postgres.utils import save_user_token_usage
 
 
 def find_context_text(query: str, user_id: str):
@@ -30,7 +31,7 @@ def query_llm(chat_model: ChatModelSource, model_name: LLM_CHAT_MODEL, prompt):
             timeout=10,
         )
         aimessage = llm.invoke(prompt)
-        print('response meta:', aimessage.response_metadata)
+        save_user_token_usage(metadata=aimessage.response_metadata)
         return str(aimessage.content)
     elif chat_model == ChatModelSource.OLLAMA:
         if not isinstance(model_name, OllamaChatModel):
