@@ -1,6 +1,5 @@
 import strawberry
 from enum import Enum
-from typing import List
 
 from strawberry.file_uploads import Upload as UploadFile
 from strawberry.types import Info
@@ -33,7 +32,8 @@ class Query:
     @strawberry.field
     async def get_response(self, query: str, info: Info) -> RAGResult:
         try:
-            user_id = info.context['user']['id']
+            user_id = info.context['user']['user_id']
+
             result = await retrieve_documents(query, user_id)
             return RAGResult(result=result)
         except Exception as e:
@@ -75,7 +75,7 @@ class Mutation:
     @strawberry.mutation
     async def update_store(self, chunk_strategy: ChunkStrategy, info: Info) -> RAGResult:
         try:
-            user_id = info.context['user']['id']
+            user_id = info.context['user']['user_id']
 
             DOCUMENTS_DIR = get_env_var("DOCUMENTS_DIR")
             documents = load_docs_from_directory(DOCUMENTS_DIR)
@@ -97,7 +97,7 @@ class Mutation:
     @strawberry.mutation
     async def delete_store(self, info: Info) -> RAGResult:
         try:
-            user_id = info.context['user']['id']
+            user_id = info.context['user']['user_id']
 
             delete_vector_store(user_id=user_id)
             return RAGResult(result="Store deleted")
