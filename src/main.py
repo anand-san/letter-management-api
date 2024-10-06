@@ -6,6 +6,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from strawberry.fastapi import GraphQLRouter
+from starlette.middleware.errors import ServerErrorMiddleware
 
 from src.api.schema import schema
 from src.middlewares.auth import AuthMiddleware
@@ -14,21 +15,10 @@ from src.utils.logging import init_sentry
 from src.db.postgres.migrate import migrate_pg
 
 load_dotenv()
+
 init_sentry()
+
 app = FastAPI()
-
-firebase_admin.initialize_app()
-
-# CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[os.getenv("FRONTEND_URL", "")],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-app.add_middleware(AuthMiddleware)
-# Generic exception handler
 
 
 @app.exception_handler(Exception)
@@ -43,13 +33,32 @@ async def generic_exception_handler(request: Request, exc: Exception):
         content={"data": error_message},
     )
 
-graphql_app = GraphQLRouter(schema, context_getter=get_context, graphiql=False)
+
+app.add_middleware(AuthMiddleware)
+app.add_middleware(ServerErrorMiddleware, handler=generic_exception_handler)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[os.getenv("FRONTEND_URL", "")],
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Authorization"],
+)
+
+
+firebase_admin.initialize_app()
+
+
+graphql_app = GraphQLRouter(schema, context_getter=get_context,
+                            graphiql=False)
 app.include_router(graphql_app, prefix="/graphql")
 
 
 @app.on_event("startup")
 async def startup():
-    await migrate_pg()
+    try:
+        await migrate_pg()
+    except Exception:
+        pass
 
 
 def start():
