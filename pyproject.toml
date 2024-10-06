@@ -33,6 +33,7 @@ requests = "^2.32.3"
 pymilvus = "^2.4.7"
 asyncpg = "^0.29.0"
 sentry-sdk = "^2.14.0"
+google-cloud-documentai = "^2.32.0"
 
 
 [tool.poetry.group.dev.dependencies]

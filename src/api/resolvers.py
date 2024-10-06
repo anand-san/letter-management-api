@@ -1,11 +1,15 @@
 import strawberry
-from strawberry.types import Info
 from enum import Enum
+from typing import List
+
+from strawberry.file_uploads import Upload as UploadFile
+from strawberry.types import Info
 
 from src.db.milvus.operations import update_vector_store, delete_vector_store
 from src.rag.document_loader import recursive_chunk_documents, load_docs_from_directory, semantic_chunk_documents
 from src.rag.retriever import retrieve_documents
 from src.utils.get_env import get_env_var
+from src.rag.document_ai import ocr_single_file
 
 
 @strawberry.type
@@ -46,6 +50,28 @@ class Query:
 
 @strawberry.type
 class Mutation:
+    @strawberry.mutation
+    async def process_documents(self, files: List[UploadFile]) -> None:
+        try:
+            contents = []
+            for file in files:
+
+                file_headers = file.headers  # type: ignore
+                file_name = file.filename  # type: ignore
+                file_mime_type = file_headers['content-type']  # type: ignore
+
+                file_content = await file.read()  # type: ignore
+
+                file_text = ocr_single_file(file_content=file_content,
+                                            file_mime_type=file_mime_type)
+                contents.append(
+                    {"name": file_name, "mime_type": file_mime_type, "content": file_text})
+            print(contents)
+            # TODO: "Convert content into embeddings and store it into DB"
+
+        except Exception:
+            raise RagException(message="Failed to process provided files")
+
     @strawberry.mutation
     async def update_store(self, chunk_strategy: ChunkStrategy, info: Info) -> RAGResult:
         try:
