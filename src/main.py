@@ -1,3 +1,6 @@
+import os
+import firebase_admin
+
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
@@ -12,18 +15,18 @@ from src.db.postgres.migrate import migrate_pg
 
 load_dotenv()
 init_sentry()
-
 app = FastAPI()
+
+firebase_admin.initialize_app()
 
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8002"],
+    allow_origins=[os.getenv("FRONTEND_URL", "")],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 app.add_middleware(AuthMiddleware)
 # Generic exception handler
 
