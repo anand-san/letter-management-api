@@ -6,8 +6,8 @@ from src.utils.get_env import get_env_var
 
 def ocr_single_file(
     file_content: bytes,
-    file_mime_type: str
-) -> str | None:
+    file_type: str
+) -> str:
     try:
         GOOGLE_CLOUD_PROJECT_ID = get_env_var("GOOGLE_CLOUD_PROJECT_ID")
         GOOGLE_CLOUD_DOCUMENT_AI_PROCESSOR_ID = get_env_var(
@@ -22,7 +22,7 @@ def ocr_single_file(
 
         raw_document = documentai.RawDocument(
             content=file_content,
-            mime_type=file_mime_type,
+            mime_type=file_type,
         )
 
         processor_name = f"projects/{GOOGLE_CLOUD_PROJECT_ID}/locations/{
@@ -33,6 +33,7 @@ def ocr_single_file(
 
         result = client.process_document(request=request)
 
-        return result.document.text if result.document else None
-    except Exception:
-        raise
+        return result.document.text if result.document else ''
+    except Exception as e:
+        print(str(e))
+        raise Exception("Failed to extract text from the document")
