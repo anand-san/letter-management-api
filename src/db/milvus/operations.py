@@ -17,7 +17,7 @@ def update_vector_store(chunked_documents: list[Document], user_id: str):
         existing_ids = set()
 
         if collection.num_entities > 0:
-            search_expr = f"document_id == '{chunked_documents[0].metadata["source"]}'"
+            search_expr = f"document_id == '{chunked_documents[0].metadata["name"]}'"
             existing_items = collection.query(
                 expr=search_expr, output_fields=["chunk_id"])
             existing_ids = set(item["chunk_id"] for item in existing_items)
@@ -33,7 +33,7 @@ def update_vector_store(chunked_documents: list[Document], user_id: str):
             data = [
                 {
                     "user_id": user_id,
-                    "document_id": new_chunks[i].metadata["source"],
+                    "document_id": new_chunks[i].metadata["name"],
                     "chunk_id": new_chunks[i].metadata["id"],
                     "embedding": vectors[i],
                     "content": new_chunks[i].page_content,
@@ -41,6 +41,8 @@ def update_vector_store(chunked_documents: list[Document], user_id: str):
                 }
                 for i in range(len(vectors))
             ]
+
+            print(data)
 
             collection.insert(data=data)
             collection.flush()

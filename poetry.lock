@@ -1182,6 +1182,27 @@ google-auth = ">=1.25.0,<3.0dev"
 grpc = ["grpcio (>=1.38.0,<2.0dev)", "grpcio-status (>=1.38.0,<2.0.dev0)"]
 
 [[package]]
+name = "google-cloud-datastore"
+version = "2.20.1"
+description = "Google Cloud Datastore API client library"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "google_cloud_datastore-2.20.1-py2.py3-none-any.whl", hash = "sha256:b9383af24d8e90ed6c5d161d72411d82efd9b21c051fa6f4bbd743a49d37ffb3"},
+    {file = "google_cloud_datastore-2.20.1.tar.gz", hash = "sha256:07950b9c8865087c565f45fa3fdd7a05d4c3d99adf79e10c3f596ff08a7d9bba"},
+]
+
+[package.dependencies]
+google-api-core = {version = ">=1.34.0,<2.0.dev0 || >=2.11.dev0,<3.0.0dev", extras = ["grpc"]}
+google-auth = ">=2.14.1,<2.24.0 || >2.24.0,<2.25.0 || >2.25.0,<3.0.0dev"
+google-cloud-core = ">=1.4.0,<3.0.0dev"
+proto-plus = {version = ">=1.22.2,<2.0.0dev", markers = "python_version >= \"3.11\""}
+protobuf = ">=3.20.2,<4.21.0 || >4.21.0,<4.21.1 || >4.21.1,<4.21.2 || >4.21.2,<4.21.3 || >4.21.3,<4.21.4 || >4.21.4,<4.21.5 || >4.21.5,<6.0.0dev"
+
+[package.extras]
+libcst = ["libcst (>=0.2.5)"]
+
+[[package]]
 name = "google-cloud-documentai"
 version = "2.32.0"
 description = "Google Cloud Documentai API client library"
@@ -5648,4 +5669,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "b2e9721f0db16144ee9cf464d65e93bea80fbef1e30f3d1a56795bc44c60a216"
+content-hash = "7da51e59934dc070617a59ef2bc49cfa27f25755a27bff3d44cddf4e7e2f4774"

@@ -1,5 +1,5 @@
 import os
-import firebase_admin
+from firebase_admin import initialize_app
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
@@ -19,6 +19,12 @@ load_dotenv()
 init_sentry()
 
 app = FastAPI()
+
+try:
+    firebase_app = initialize_app()
+    print("Firebase App initialized, ProjectID:", firebase_app.project_id)
+except Exception:
+    print("Failed to load firebase admin")
 
 
 @app.exception_handler(Exception)
@@ -43,10 +49,6 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["Authorization"],
 )
-
-
-firebase_admin.initialize_app()
-
 
 graphql_app = GraphQLRouter(schema, context_getter=get_context,
                             graphiql=False)

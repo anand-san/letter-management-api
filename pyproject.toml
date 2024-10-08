@@ -29,6 +29,7 @@ asyncpg = "^0.29.0"
 sentry-sdk = "^2.14.0"
 google-cloud-documentai = "^2.32.0"
 firebase-admin = "^6.5.0"
+google-cloud-datastore = "^2.20.1"
 
 
 [tool.poetry.group.dev.dependencies]
