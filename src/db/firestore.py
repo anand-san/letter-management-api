@@ -1,6 +1,6 @@
 from firebase_admin import storage
 from google.cloud import datastore
-from google.cloud.datastore import Entity
+from google.cloud.datastore import Entity, Key
 from datetime import datetime, timezone
 
 from src.utils.get_env import get_env_var
@@ -23,7 +23,7 @@ def upload_document_to_bucket(file_id: str, file, file_type: str, user_id: str):
         raise Exception("Failed to save document")
 
 
-def save_document_metadata(file_id: str, file_name: str, file_type: str, file_url: str, user_id: str, ):
+def save_document_metadata(file_id: str, file_name: str, file_type: str, file_url: str, user_id: str) -> Key:
     try:
         client = datastore.Client()
 
@@ -37,12 +37,31 @@ def save_document_metadata(file_id: str, file_name: str, file_type: str, file_ur
             'file_type': file_type,
             'original_file_name': file_name,
             'file_url': file_url,
-            'extracted_text': 'Not-Processed',
+            'extracted_text': '',
             'upload_date': datetime.now(timezone.utc)
         })
 
         client.put(entity)
 
-        return entity.key
+        return entity.key  # type: ignore
     except Exception:
         raise Exception("Failed to save document metadata")
+
+
+def update_extracted_text(user_id: str, document_key: Key, extracted_text: str) -> Key:
+    try:
+        client = datastore.Client()
+
+        key = client.key('User', user_id, 'Document', document_key.id)
+        entity = client.get(key)
+
+        if not entity:
+            raise ValueError(f"No document found for user {
+                             user_id} with key {document_key.id}")
+
+        entity['extracted_text'] = extracted_text
+        client.put(entity)
+        return entity.key  # type: ignore
+    except Exception as e:
+        print(str(e))
+        raise Exception("Failed to update extracted text from document")

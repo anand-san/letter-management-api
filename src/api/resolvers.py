@@ -4,12 +4,13 @@ import uuid
 
 from strawberry.file_uploads import Upload as UploadFile
 from strawberry.types import Info
+from google.cloud.datastore import Key
 
 from src.db.milvus.operations import update_vector_store, delete_vector_store
 from src.rag.document_loader import recursive_chunk_documents, semantic_chunk_documents, recursive_chunk_text
 from src.rag.retriever import retrieve_documents
 from src.rag.document_ai import ocr_single_file
-from src.db.firestore import save_document_metadata, upload_document_to_bucket
+from src.db.firestore import save_document_metadata, update_extracted_text, upload_document_to_bucket
 
 
 @strawberry.type
@@ -66,16 +67,18 @@ class Mutation:
             uploaded_file_url = upload_document_to_bucket(
                 file_id=file_id, file=file_content, file_type=file_type, user_id=user_id)
 
-            save_document_metadata(file_id=file_id, file_name=file_name,
-                                   file_type=file_type, file_url=uploaded_file_url, user_id=user_id)
+            saved_document_key = save_document_metadata(file_id=file_id, file_name=file_name,
+                                                        file_type=file_type, file_url=uploaded_file_url, user_id=user_id)
+            extracted_text = ocr_single_file(file_content=file_content,
+                                             file_type=file_type)
 
-            file_text = ocr_single_file(file_content=file_content,
-                                        file_type=file_type)
+            update_extracted_text(
+                user_id=user_id, document_key=saved_document_key, extracted_text=extracted_text)
 
             file_metadata = (
                 [{"name": file_name, "mime_type": file_type}])
 
-            chunks = recursive_chunk_text([file_text], metadata=file_metadata)
+            chunks = recursive_chunk_text([extracted_text], metadata=file_metadata)
 
             update_vector_store(chunks, user_id)
 
