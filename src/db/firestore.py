@@ -65,3 +65,8 @@ def update_extracted_text(user_id: str, document_key: Key, extracted_text: str) 
     except Exception as e:
         print(str(e))
         raise Exception("Failed to update extracted text from document")
+
+
+def save_user_token_usage(metadata):
+    # TODO: Save user token usage to DB
+    print(metadata)

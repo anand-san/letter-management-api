@@ -12,7 +12,6 @@ from src.api.schema import schema
 from src.middlewares.auth import AuthMiddleware
 from src.context.get_context import get_context
 from src.utils.logging import init_sentry
-from src.db.postgres.migrate import migrate_pg
 
 load_dotenv()
 
@@ -53,14 +52,6 @@ app.add_middleware(
 graphql_app = GraphQLRouter(schema, context_getter=get_context,
                             graphiql=False)
 app.include_router(graphql_app, prefix="/graphql")
-
-
-@app.on_event("startup")
-async def startup():
-    try:
-        await migrate_pg()
-    except Exception:
-        pass
 
 
 def start():

@@ -6,7 +6,7 @@ from src.db.milvus.utils import embed_query
 from src.rag.document_loader import load_file_template
 from src.rag.indexer import ChatModelSource, LLM_CHAT_MODEL, OllamaChatModel, OpenAIChatModel
 from src.db.milvus.operations import search_user_documents_vector
-from src.db.postgres.utils import save_user_token_usage
+from src.db.firestore import save_user_token_usage
 
 
 def find_context_text(query: str, user_id: str):
