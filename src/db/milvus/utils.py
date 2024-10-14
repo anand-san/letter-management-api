@@ -40,9 +40,8 @@ def create_document_chunk_ids(chunks: list[Document]):
     current_chunk_index = 0
 
     for chunk in chunks:
-        source = chunk.metadata.get("source")
-        page = chunk.metadata.get("page")
-        current_page_id = f"{source}:{page}"
+        source = chunk.metadata.get("name")
+        current_page_id = f"{source}"
 
         # If the page ID is the same as the last one, increment the index.
         if current_page_id == last_page_id:
@@ -55,6 +54,6 @@ def create_document_chunk_ids(chunks: list[Document]):
         last_page_id = current_page_id
 
         # Add it to the page meta-data.
-        chunk.metadata["id"] = chunk_id
+        chunk.metadata["chunk_id"] = chunk_id
 
     return chunks

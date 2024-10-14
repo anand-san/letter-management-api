@@ -24,26 +24,21 @@ def update_vector_store(chunked_documents: list[Document], user_id: str):
 
         new_chunks: list[Document] = []
         for chunk in chunks_with_ids:
-            if chunk.metadata["id"] not in existing_ids:
+            if chunk.metadata["chunk_id"] not in existing_ids:
                 new_chunks.append(chunk)
-
         if len(new_chunks):
             vectors = embed_documents(new_chunks)
-
             data = [
                 {
                     "user_id": user_id,
                     "document_id": new_chunks[i].metadata["name"],
-                    "chunk_id": new_chunks[i].metadata["id"],
+                    "chunk_id": new_chunks[i].metadata["chunk_id"],
                     "embedding": vectors[i],
                     "content": new_chunks[i].page_content,
                     "document_metadata": new_chunks[i].metadata
                 }
                 for i in range(len(vectors))
             ]
-
-            print(data)
-
             collection.insert(data=data)
             collection.flush()
     except Exception as e:

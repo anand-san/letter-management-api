@@ -4,18 +4,26 @@ import uuid
 
 from strawberry.file_uploads import Upload as UploadFile
 from strawberry.types import Info
-from google.cloud.datastore import Key
+from strawberry.scalars import JSON
 
 from src.db.milvus.operations import update_vector_store, delete_vector_store
 from src.rag.document_loader import recursive_chunk_documents, semantic_chunk_documents, recursive_chunk_text
-from src.rag.retriever import retrieve_documents
+from src.rag.retriever import LLMAssistant
 from src.rag.document_ai import ocr_single_file
-from src.db.firestore import save_document_metadata, update_extracted_text, upload_document_to_bucket
+from src.db.firestore import FirestoreManager
+from src.db.utils import strip_and_make_single_line
 
 
 @strawberry.type
 class RAGResult:
     result: str
+
+
+@strawberry.type
+class ProcessDocumentResult:
+    result: str
+    documentId: str
+    insights: JSON
 
 
 @strawberry.enum
@@ -31,12 +39,15 @@ class RagException(Exception):
 
 @strawberry.type
 class Query:
+
     @strawberry.field
     async def get_response(self, query: str, info: Info) -> RAGResult:
         try:
             user_id = info.context['user']['user_id']
 
-            result = await retrieve_documents(query, user_id)
+            llm_assistant = LLMAssistant(user_id)
+            result = await llm_assistant.retrieve_documents(query)
+
             return RAGResult(result=result)
         except Exception as e:
             raise RagException(str(e))
@@ -53,7 +64,7 @@ class Query:
 @strawberry.type
 class Mutation:
     @strawberry.mutation
-    async def process_document(self, file: UploadFile, info: Info) -> str:
+    async def process_document(self, file: UploadFile, info: Info) -> JSON:
         try:
             user_id = info.context['user']['user_id']
 
@@ -64,25 +75,36 @@ class Mutation:
             file_id = str(uuid.uuid4())
             file_content = await file.read()  # type: ignore
 
-            uploaded_file_url = upload_document_to_bucket(
-                file_id=file_id, file=file_content, file_type=file_type, user_id=user_id)
+            firestore_manager = FirestoreManager(user_id)
+            llm_assistent = LLMAssistant(user_id=user_id)
 
-            saved_document_key = save_document_metadata(file_id=file_id, file_name=file_name,
-                                                        file_type=file_type, file_url=uploaded_file_url, user_id=user_id)
+            uploaded_file_url = firestore_manager.upload_document_to_bucket(
+                file_id=file_id, file=file_content, file_type=file_type)
+
+            saved_document_key = firestore_manager.save_document_metadata(file_id=file_id, file_name=file_name,
+                                                                          file_type=file_type, file_url=uploaded_file_url)
             extracted_text = ocr_single_file(file_content=file_content,
                                              file_type=file_type)
 
-            update_extracted_text(
-                user_id=user_id, document_key=saved_document_key, extracted_text=extracted_text)
+            single_line_extracted_text = strip_and_make_single_line(extracted_text)
+            firestore_manager.update_extracted_text(
+                document_key=saved_document_key, extracted_text=single_line_extracted_text)
+
+            insights = await llm_assistent.retrieve_insights_from_assistant(
+                document_text=single_line_extracted_text)
+
+            firestore_manager.save_document_insights(
+                document_key=saved_document_key, insights=insights)
 
             file_metadata = (
                 [{"name": file_name, "mime_type": file_type}])
 
-            chunks = recursive_chunk_text([extracted_text], metadata=file_metadata)
+            chunks = recursive_chunk_text(
+                [single_line_extracted_text], metadata=file_metadata)
 
             update_vector_store(chunks, user_id)
 
-            return "Documents processed"
+            return {"result": "Documents processed", "documentId": saved_document_key.id, "insights": insights}
 
         except Exception as e:
             print(str(e))
