@@ -1,7 +1,7 @@
 import { initializeApp, cert, getApps } from "firebase-admin/app";
 
 export const initializeFirebaseAppAdmin = (
-  serviceAccount: string,
+  serviceAccount: Record<string, string>,
   storageBucket: string
 ) => {
   try {
@@ -9,7 +9,7 @@ export const initializeFirebaseAppAdmin = (
 
     if (apps.length === 0) {
       initializeApp({
-        credential: cert(JSON.parse(serviceAccount)),
+        credential: cert(serviceAccount),
         storageBucket: storageBucket,
       });
       console.log("Firebase app initialized.");
