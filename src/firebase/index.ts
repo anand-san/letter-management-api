@@ -1,5 +1,5 @@
-import { FirebaseFirestoreManager } from "./firebaseFirestore.ts";
-import { FirebaseStorageManager } from "./firebaseStorage.ts";
+import { FirebaseFirestoreManager } from "./firebaseFirestore";
+import { FirebaseStorageManager } from "./firebaseStorage";
 
 export class FirebaseManager {
   userId: string;

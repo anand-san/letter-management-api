@@ -1,6 +1,6 @@
-import { FirebaseManager } from "./../../firebase/index.ts";
+import { FirebaseManager } from "./../../firebase/index";
 import type { Context } from "hono";
-import { LLMAssistant } from "../../service/openAI/OpenAiManager.ts";
+import { LLMAssistant } from "../../service/openAI/OpenAiManager";
 
 export class InsightsService {
   static async getInsights(context: Context) {
@@ -52,30 +52,44 @@ export class InsightsService {
         );
       }
 
-      await firebaseManager.firestore
-        .getDocumentOcrData(documentId)
-        .then((documentOcr) => {
-          if (!documentOcr) {
-            return ctx.json(
-              { error: "Cound not extract text from the document mentioned" },
-              404
-            );
-          }
-          const llm = new LLMAssistant(user_id, ctx);
-          llm
-            .retrieveInsightsFromAssistant(documentOcr)
-            .then((documentInsights) => {
-              firebaseManager.firestore.saveDocumentInsights(
-                documentId,
-                documentInsights
-              );
-            });
-        });
+      const insightId = await this.processInsights(documentId, user_id, ctx);
 
-      return ctx.json({ message: "Processing" }, 201);
+      return ctx.json({ message: "Successful", id: insightId }, 202);
     } catch (error) {
       console.error("Error creating insights:", error);
       return ctx.json({ error: "Internal Server Error" }, 500);
     }
   };
+
+  private static async processInsights(
+    documentId: string,
+    user_id: string,
+    ctx: Context
+  ) {
+    try {
+      const firebaseManager: FirebaseManager = ctx.get("firebaseManager");
+
+      const documentOcr = await firebaseManager.firestore.getDocumentOcrData(
+        documentId
+      );
+      if (!documentOcr) {
+        console.error("Could not extract text from the document mentioned");
+        return;
+      }
+
+      const llm = new LLMAssistant(user_id, ctx);
+      const documentInsights = await llm.retrieveInsightsFromAssistant(
+        documentOcr
+      );
+
+      await firebaseManager.firestore.saveDocumentInsights(
+        documentId,
+        documentInsights
+      );
+
+      console.log("Insights processing completed successfully");
+    } catch (error) {
+      console.error("Error processing insights in the background:", error);
+    }
+  }
 }

@@ -7,5 +7,6 @@ export async function getUserByUid(uid: string) {
     return userRecord.toJSON();
   } catch (error) {
     console.log("Error fetching user data:", error);
+    throw error;
   }
 }

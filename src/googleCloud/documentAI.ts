@@ -1,9 +1,9 @@
 import type { Context } from "hono";
-import { DocumentProcessorServiceClient } from "documentai";
+import { DocumentProcessorServiceClient } from "@google-cloud/documentai";
 
 export async function ocrFile(file: File, ctx: Context): Promise<string> {
   try {
-    const env = ctx.get("env");
+    const env = ctx.env;
 
     const client = new DocumentProcessorServiceClient({
       apiEndpoint: `${env.GOOGLE_CLOUD_DOCUMENT_AI_PROCESSOR_REGION}-documentai.googleapis.com`,

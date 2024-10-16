@@ -1,7 +1,7 @@
 import type { Context } from "hono";
-import { FirebaseManager } from "../../firebase/index.ts";
-import { ocrFile } from "../../googleCloud/documentAI.ts";
-import { stripSingleLine } from "../../utils/stripSingleLine.ts";
+import { FirebaseManager } from "../../firebase/index";
+import { ocrFile } from "../../googleCloud/documentAI";
+import { stripSingleLine } from "../../utils/stripSingleLine";
 
 export class DocumentService {
   static async getDocuments(context: Context) {
@@ -14,8 +14,8 @@ export class DocumentService {
     const body = await context.req.parseBody();
     const file = body.file;
 
-    if (!file) {
-      return context.json({ error: "No file uploaded" }, 400);
+    if (!file || !(file instanceof File) || !file.name) {
+      return context.json({ error: "Please upload a valid file" }, 400);
     }
 
     if (!(file instanceof File)) {

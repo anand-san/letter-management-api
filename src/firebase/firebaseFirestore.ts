@@ -121,7 +121,7 @@ export class FirebaseFirestoreManager {
 
   async saveDocumentInsights(
     documentId: string,
-    insights: string
+    insights: Record<string, string>
   ): Promise<string> {
     try {
       const insightRef = this.db

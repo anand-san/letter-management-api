@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { DocumentService } from "../service/documentService/DocumentService.ts";
+import { DocumentService } from "../service/documentService/DocumentService";
 
 export const documentsRouter = new Hono();
 

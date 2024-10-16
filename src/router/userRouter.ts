@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { Context } from "hono";
-import { getUserByUid } from "../firebase/auth.ts";
+import { getUserByUid } from "../firebase/auth";
 
 export const userRouter = new Hono();
 

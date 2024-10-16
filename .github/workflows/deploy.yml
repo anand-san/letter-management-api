@@ -1,9 +1,9 @@
-name: Deploy to Google Cloud Run
+name: Build and deploy on ghcr
 
 on:
   push:
     branches:
-      - deno-godly # or your default branch name
+      - deno-godly
 
 env:
   SERVICE_NAME: paiperless-api
@@ -30,6 +30,12 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          platforms: linux/arm/v8
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/${{ env.SERVICE_NAME }}
+          tags: ghcr.io/${{ github.repository_owner }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+
+      # - name: Deploy to Google Cloud Run
+      #   uses: google-github-actions/deploy-cloudrun@v1
+      #   with:
+      #     service: ${{ env.SERVICE_NAME }}
+      #     image: ghcr.io/${{ github.repository_owner }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+      #     credentials: ${{ secrets.GCP_SA_KEY }}

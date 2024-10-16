@@ -1,5 +1,5 @@
 import type { Context } from "hono";
-import { FirebaseManager } from "./firebase/index.ts";
+import { FirebaseManager } from "./firebase/index";
 
 export const initializeServicesInContext = (context: Context) => {
   try {

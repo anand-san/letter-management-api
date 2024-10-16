@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { InsightsService } from "../service/insightService/InsightsService.ts";
+import { InsightsService } from "../service/insightService/InsightsService";
 
 export const insightsRouter = new Hono();
 

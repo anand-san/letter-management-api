@@ -1,6 +1,11 @@
 # Deno
 .deno_dir/
 
+# Node
+node_modules/
+dist/
+
+
 # Environment variables
 .env
 
@@ -18,3 +23,4 @@
 Thumbs.db
 
 todo.md
+

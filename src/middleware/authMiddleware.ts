@@ -1,11 +1,14 @@
 import type { Context, Next } from "hono";
 import { getAuth } from "firebase-admin/auth";
-import { initializeServicesInContext } from "../context.ts";
+import { initializeServicesInContext } from "../context";
 
-export const authMiddleware = async (context: Context, next: Next) => {
+export const authMiddleware = async (
+  context: Context,
+  next: Next
+): Promise<void> => {
   const authHeader = context.req.header("Authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return context.json({ error: "Unauthorized" }, 401);
+    throw new Error("Unauthorized");
   }
 
   const token = authHeader.split("Bearer ")[1];
@@ -18,6 +21,6 @@ export const authMiddleware = async (context: Context, next: Next) => {
     await next();
   } catch (error) {
     console.error("Auth error:", error);
-    return context.json({ error: "Invalid token" }, 401);
+    throw error;
   }
 };

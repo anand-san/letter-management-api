@@ -1,10 +1,13 @@
 import type { Context, Next } from "hono";
 
-export const errorMiddleware = async (c: Context, next: Next) => {
+export const errorMiddleware = async (
+  _ctx: Context,
+  next: Next
+): Promise<void> => {
   try {
     await next();
   } catch (err) {
     console.error("Global error:", err);
-    return c.json({ error: "Internal Server Error" }, 500);
+    throw err;
   }
 };

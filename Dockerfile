@@ -1,9 +1,24 @@
-FROM denoland/deno:alpine
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY . .
+COPY package.json package-lock.json ./
 
-RUN deno cache main.ts
+RUN npm ci
 
-CMD ["deno", "run", "--allow-net", "--allow-env", "--allow-read", "--allow-run", "main.ts"]
+COPY src ./src
+COPY templates ./templates
+COPY tsconfig.json ./tsconfig.json
+
+RUN npm run build
+
+# Production stage
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/templates ./templates
+
+# Run the application
+CMD ["node", "dist/main.js"]

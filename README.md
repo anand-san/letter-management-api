@@ -1,60 +1,47 @@
 # Paiperless API
 
-This is a production-level Deno-based API server using Hono and Firebase Admin.
+This is the API server for paperless using Hono and Firebase.
 
 ## Prerequisites
 
-- [Deno](https://deno.land/#installation) installed on your machine
+- [Node.js](https://nodejs.org/) (version 20 or later) installed on your machine
 - Firebase project set up with service account credentials
+- Google Cloud account - For documennt ocr
 
 ## Setup
 
 1. Clone this repository:
 
-   ```
-   git clone https://github.com/your-username/paiperless-api.git
-   cd paiperless-api
-   ```
-
-2. Set up your Firebase service account:
-   - Go to your Firebase Console
-   - Navigate to Project settings > Service Accounts
-   - Generate a new private key and download the JSON file
-   - Set the contents of this JSON file as an environment variable:
-     ```
-     export FIREBASE_SERVICE_ACCOUNT='{"type": "service_account", ...}'
-     ```
-
-## Running the server
-
-To start the server, run:
-
 ```
-deno task start
+git clone https://github.com/anand-san/paiperless-api.git
+
+cd paiperless-api
 ```
 
-The server will start on `http://localhost:8000`.
+2. Install dependencies:
 
-## API Endpoints
+```
+npm install
+```
 
-- `GET /`: Returns a "Hello Hono!" message
-- `GET /api/data`: Returns a placeholder message (to be replaced with actual Firebase data)
+3. Set up your Firebase service account:
 
-## Development
+- Go to your Firebase Console
+- Navigate to Project settings > Service Accounts
+- Generate a new private key and download the JSON file
+- Create a `.env` file in the project root and add the following:
+  ```
+  FIREBASE_SERVICE_ACCOUNT='{"type": "service_account", ...}'
+  ```
 
-This project uses Deno for runtime and package management. The main application file is `src/main.ts`.
+## Running the server locally
 
-To add new routes or functionality, modify the `src/main.ts` file.
+To start the server in development mode, run:
 
-## Production Deployment
+npm run dev
 
-For production deployment, consider the following:
+For production, build and start:
 
-1. Set up proper environment variable management for your production environment.
-2. Use a process manager like PM2 to keep your application running.
-3. Set up a reverse proxy (like Nginx) to handle SSL termination and load balancing.
-4. Implement proper logging and monitoring solutions.
+npm run build npm start
 
-## License
-
-[MIT License](LICENSE)
+The server will start on `http://localhost:port`
