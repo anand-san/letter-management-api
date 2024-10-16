@@ -1,6 +1,6 @@
 {
   "name": "paiperless-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Node.js-based API server using Express and Firebase Admin",
   "main": "src/main.ts",
   "scripts": {
