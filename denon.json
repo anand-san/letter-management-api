@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "start": {
+      "cmd": "deno run --allow-net --allow-read --allow-env --allow-run main.ts",
+      "desc": "Run the main.ts file with necessary permissions"
+    }
+  },
+  "watch": true,
+  "unstable": true
+}

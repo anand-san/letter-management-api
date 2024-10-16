@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "start": "deno run --allow-net --allow-read --allow-env --allow-run  main.ts",
+    "start:dev": "denon start"
+  },
+  "importMap": "deps.json",
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["deno.window"]
+  }
+}

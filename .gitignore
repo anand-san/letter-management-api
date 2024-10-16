@@ -1,27 +1,18 @@
-# Virtual environment
-.venv/
-.temp_docs/
-documents/
-logs/
-
-# Cache
-__pycache__/
-.cache/
-
-*.pyc
-*.pyo
-*.pyd
+# Deno
+.deno_dir/
 
 # Environment variables
 .env
-.env.app.prod
 
-# Distribution / packaging
-build/
-dist/
-*.egg-info/
-.milvus/
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-todos.md
-
-firebase-service-account.json
+# OS generated files
+.DS_Store
+Thumbs.db
