@@ -23,10 +23,6 @@ const withEnv =
 const main = async () => {
   try {
     const serviceAccount = JSON.parse(env.FIREBASE_SERVICE_ACCOUNT);
-    serviceAccount.private_key = serviceAccount.private_key.replace(
-      /\\n/g,
-      "\n"
-    );
     const storageBucket = env.FIREBASE_STORAGE_BUCKET;
     initializeFirebaseAppAdmin(serviceAccount, storageBucket);
 

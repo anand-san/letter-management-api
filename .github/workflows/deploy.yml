@@ -6,9 +6,7 @@ on:
       - deno-godly # or your default branch name
 
 env:
-  PROJECT_ID: ${{ secrets.GOOGLE_CLOUD_PROJECT_ID }}
   SERVICE_NAME: paiperless-api
-  REGION: ${{ secrets.GOOGLE_CLOUD_RUN_REGION }}
 
 jobs:
   deploy:
@@ -34,25 +32,3 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
-
-      - name: Google Auth
-        id: auth
-        uses: "google-github-actions/auth@v1"
-        with:
-          credentials_json: "${{ secrets.GOOGLE_CLOUD_SERVICE_ACCOUNT }}"
-
-      - name: Setup Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-
-      - name: Configure Docker credential helper
-        run: |
-          gcloud auth configure-docker ${{ secrets.GOOGLE_CLOUD_ARTIFACTS_REGION }}
-
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy ${{ env.SERVICE_NAME }} \
-            --image ${{ secrets.GOOGLE_CLOUD_ARTIFACTS_REGION }}/${{ secrets.GOOGLE_CLOUD_PROJECT_ID }}/ghcr.io/${{ github.repository_owner }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
-            --platform managed \
-            --region ${{ env.REGION }} \
-            --allow-unauthenticated \
-            --set-env-vars=FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }},GOOGLE_CLOUD_PROJECT_ID=${{ secrets.GOOGLE_CLOUD_PROJECT_ID }},GOOGLE_CLOUD_DOCUMENT_AI_PROCESSOR_REGION=${{ secrets.GOOGLE_CLOUD_DOCUMENT_AI_PROCESSOR_REGION }},GOOGLE_CLOUD_DOCUMENT_AI_PROCESSOR_ID=${{ secrets.GOOGLE_CLOUD_DOCUMENT_AI_PROCESSOR_ID }},OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }},OPENAI_MODEL=${{ secrets.OPENAI_MODEL }}
