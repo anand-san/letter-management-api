@@ -11,14 +11,14 @@ import { loggerMiddleware } from "./src/middleware/loggerMiddleware.ts";
 import { timingMiddleware } from "./src/middleware/timingMiddleware.ts";
 import { errorMiddleware } from "./src/middleware/errorMiddleware.ts";
 
-const withEnv = (
-  middleware: (c: Context, next: Next) => Promise<Response | void | undefined>
-) => {
-  return async (c: Context<{ Bindings: Env }>, next: Next) => {
+const withEnv =
+  (
+    middleware: (c: Context, next: Next) => Promise<Response | void | undefined>
+  ) =>
+  async (c: Context<{ Bindings: Env }>, next: Next) => {
     c.env = env;
-    await middleware(c, next);
+    return await middleware(c, next);
   };
-};
 
 const main = async () => {
   try {
