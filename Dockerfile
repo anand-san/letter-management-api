@@ -1,19 +1,9 @@
-FROM python:3.12-slim
+FROM denoland/deno:latest
 
 WORKDIR /app
 
-EXPOSE 8000
-ENV PYTHONPATH=/app
+COPY . .
 
-COPY pyproject.toml /app
-COPY poetry.lock* /app
+RUN deno cache main.ts
 
-RUN pip install poetry
-RUN poetry config virtualenvs.create false
-RUN poetry install --no-dev --no-interaction --no-ansi
-
-COPY documents /app/documents
-COPY templates /app/templates
-COPY src /app/src
-
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["deno", "run", "--allow-net", "--allow-env", "--allow-read", "--allow-run", "main.ts"]
