@@ -12,10 +12,8 @@ export class LLMAssistant {
   constructor(userId: string, context: Context) {
     this.userId = userId;
     this.firebaseManager = new FirebaseManager(this.userId);
-    const env = context.get("env");
-    const openaiApiKey = env.OPENAI_API_KEY;
-    this.openaiModel = env.OPENAI_MODEL;
-    this.openai = new OpenAI({ apiKey: openaiApiKey });
+    this.openaiModel = context.env.OPENAI_MODEL;
+    this.openai = new OpenAI({ apiKey: context.env.OPENAI_API_KEY });
   }
 
   private _loadFileTemplate = async (filename: string): Promise<string> => {
