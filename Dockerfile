@@ -19,6 +19,7 @@ WORKDIR /app
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/templates ./templates
+COPY --from=builder /app/node_modules ./node_modules
 
 # Run the application
 CMD ["node", "dist/main.js"]
