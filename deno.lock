@@ -1,12 +1,18 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@std/dotenv@*": "0.225.2",
     "npm:@google-cloud/documentai@8.11.0": "8.11.0",
     "npm:@langchain/core@0.3.11": "0.3.11_zod@3.23.8",
     "npm:@langchain/openai@0.3.7": "0.3.7_@langchain+core@0.3.11__zod@3.23.8_zod@3.23.8_openai@4.67.3__zod@3.23.8",
     "npm:@types/node@*": "22.5.4",
     "npm:firebase-admin@11.9.0": "11.9.0",
     "npm:firebase-admin@12.6.0": "12.6.0"
+  },
+  "jsr": {
+    "@std/dotenv@0.225.2": {
+      "integrity": "e2025dce4de6c7bca21dece8baddd4262b09d5187217e231b033e088e0c4dd23"
+    }
   },
   "npm": {
     "@babel/helper-string-parser@7.25.7": {
