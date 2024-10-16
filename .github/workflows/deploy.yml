@@ -19,21 +19,21 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: "20"
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
 
-      # - name: Get current version and bump
-      #   id: version
-      #   run: |
-      #     current_version=$(node -p "require('./deno.json').version")
-      #     npm version patch --no-git-tag-version
-      #     new_version=$(node -p "require('./deno.json').version")
-      #     echo "Current version: $current_version"
-      #     echo "New version: $new_version"
-      #     echo "CURRENT_VERSION=$current_version" >> $GITHUB_ENV
-      #     echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
+      - name: Bump version
+        id: bump-version
+        run: |
+          current_version=$(deno eval "console.log(JSON.parse(Deno.readTextFileSync('deno.json')).version)")
+          new_version=$(deno eval "const v = JSON.parse(Deno.readTextFileSync('deno.json')).version.split('.'); v[2]++; console.log(v.join('.'))")
+          deno eval "const f = JSON.parse(Deno.readTextFileSync('deno.json')); f.version = '$new_version'; Deno.writeTextFileSync('deno.json', JSON.stringify(f, null, 2))"
+          echo "Current version: $current_version"
+          echo "New version: $new_version"
+          echo "CURRENT_VERSION=$current_version" >> $GITHUB_ENV
+          echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -52,16 +52,17 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/${{ github.repository_owner }}/${{ env.SERVICE_NAME }}:godly
+            ghcr.io/${{ github.repository_owner }}/${{ env.SERVICE_NAME }}:${{ env.NEW_VERSION }}
             ghcr.io/${{ github.repository_owner }}/${{ env.SERVICE_NAME }}:latest
 
-      # - name: Commit and push if changed
-      #   run: |
-      #     git config --local user.email "action@github.com"
-      #     git config --local user.name "GitHub Action"
-      #     git add package.json
-      #     git commit -m "Bump version to ${{ env.NEW_VERSION }}" || exit 0
-      #     git push
+      - name: Commit and push if changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add deno.json
+          git commit -m "Bump version to ${{ env.NEW_VERSION }}" || exit 0
+          git push
+
       # - name: Build and push Docker image
       #   uses: docker/build-push-action@v5
       #   with:
