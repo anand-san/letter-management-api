@@ -1,0 +1,20 @@
+services:
+  deno-app:
+    image: deno-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    command:
+      [
+        "deno",
+        "run",
+        "--allow-net",
+        "--allow-env",
+        "--allow-read",
+        "--allow-run",
+        "main.ts",
+      ]
